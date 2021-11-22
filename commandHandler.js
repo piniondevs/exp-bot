@@ -2,25 +2,28 @@ require('dotenv').config();
 
 const commandIndexGenerator = require('./commandIndexGen');
 const altGenenerator = require('./altGen');
-
+const levels = require('./levels');
 const User = require('./models/User');
-
 const ErrorEmbed = require('./utils/errorEmbed');
 
 const prefix = process.env.PREFIX;
 
 const commandHandler = async (message) => {
 
-  const userId = await User.findOne({ id: message.author.id });
-  if (!userId) {
+  const user = await User.findOne({ id: message.author.id });
+  if (!user) {
     const newUser = new User({
       id: message.author.id,
       username: message.author.username,
-      xp: 0,
+      xp: 1,
       level: 1
     });
     await newUser.save();
+    return;
   }
+
+  const lvl = user.xp;
+  await User.findOneAndUpdate({ id: user.id }, { xp: lvl + 1 });
 
   // Bot Stuff
   if (!message.content.startsWith(prefix)) return;
