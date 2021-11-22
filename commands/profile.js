@@ -26,7 +26,7 @@ module.exports = {
         }
 
         const profile = new Discord.MessageEmbed()
-          .setColor('RANDOM')
+          .setColor('AQUA')
           .setTitle(mentionUser.username)
           .setThumbnail(mention.displayAvatarURL())
           .setDescription(`**${levels[mentionUser.level] - mentionUser.xp}** messages left until next level`)
@@ -40,6 +40,19 @@ module.exports = {
         return;
 
       }
+
+      const user = await User.findOne({ id: message.author.id });
+      const embed = new Discord.MessageEmbed()
+        .setColor('AQUA')
+        .setTitle(user.username)
+        .setThumbnail(message.author.avatarURL())
+        .setDescription(`**${levels[user.level] - user.xp}** messages left until next level`)
+        .addFields(
+          { name: 'Level', value: user.level },
+          { name: 'EXP', value: `${user.xp}/${levels[user.level]}` }
+        );
+
+      message.channel.send(embed);
 
     } catch (err) {
       console.log(err);
