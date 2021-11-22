@@ -25,7 +25,12 @@ const commandHandler = async (message) => {
   const lvl = user.xp;
   await User.findOneAndUpdate({ id: user.id }, { xp: lvl + 1 });
 
-  // Bot Stuff
+  const amogUser = await User.findOne({ id: message.author.id });
+  if (levels[amogUser.level] < amogUser.xp) {
+    console.log('top reached');
+  }
+
+  // Stuff related to the bot starts from here
   if (!message.content.startsWith(prefix)) return;
 
   const baseCommand = message.content.toLowerCase().split(' ')[0].split('');
